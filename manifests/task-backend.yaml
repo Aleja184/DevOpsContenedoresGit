@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: /snap/kompose/19/kompose-linux-amd64 convert
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: task-backend
+  name: task-backend
+spec:
+  type: LoadBalancer
+  ports:
+  - name: "8081"
+    port: 8081
+    targetPort: 8080
+  selector:
+    io.kompose.service: task-backend
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: /snap/kompose/19/kompose-linux-amd64 convert
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: task-backend
+  name: task-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: task-backend
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: /snap/kompose/19/kompose-linux-amd64 convert
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: task-backend
+    spec:
+      containers:
+      - image: 210209687826.dkr.ecr.us-east-1.amazonaws.com/labsemillero:BackEnd7
+        imagePullPolicy: ""
+        name: task-backend
+        ports:
+        - containerPort: 8080
+        resources: {}      
+      imagePullSecrets:
+      - name: ecr-registry-secret
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}

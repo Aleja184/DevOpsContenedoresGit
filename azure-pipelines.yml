@@ -1,0 +1,43 @@
+trigger:
+- Alejandra-Toro
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: VariablesECR
+steps:
+- task: Docker@2
+  inputs:
+    containerRegistry: 'DockerHub'
+    repository: 'alejandra03/devopscontenedores_task-frontend'
+    command: 'buildAndPush'
+    Dockerfile: 'frontend.dockerfile'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'DockerHub'
+    repository: 'alejandra03/devopscontenedores_task-backend'
+    command: 'buildAndPush'
+    Dockerfile: 'backend.dockerfile'
+
+- task: ECRPushImage@1
+  inputs:
+    awsCredentials: 'AWS ECR'
+    regionName: '$(region)'
+    imageSource: 'imageid'
+    sourceImageId: '$(imagesrcFrontend):$(Build.BuildId)'
+    repositoryName: '$(reponame)'
+    pushTag: 'FrontEnd7'
+    autoCreateRepository: true
+
+
+- task: ECRPushImage@1
+  inputs:
+    awsCredentials: 'AWS ECR'
+    regionName: 'us-east-1'
+    imageSource: 'imageid'
+    sourceImageId: '$(imagesrcBackend):$(Build.BuildId)'
+    repositoryName: 'labsemillero'
+    pushTag: 'BackEnd7'
+    autoCreateRepository: true

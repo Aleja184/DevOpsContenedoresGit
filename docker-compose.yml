@@ -1,0 +1,10 @@
+version: '3'
+services:
+  task-frontend:
+    image: alejandra03/devopscontenedores_task-frontend:266
+    ports:
+      - 8080:80
+  task-backend:
+    image: alejandra03/devopscontenedores_task-backend:266
+    ports:
+      - 8081:8080
